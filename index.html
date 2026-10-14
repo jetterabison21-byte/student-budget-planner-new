@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Budget Planner | ABM</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:#eaf7ff;font-family:Arial,sans-serif;color:#17345b}
+main{max-width:1000px;margin:auto;background:#fffdf8;border:2px solid #58baf1;border-radius:12px;overflow:hidden}
+header{text-align:center;padding:24px 16px;background:linear-gradient(120deg,#fff,#fff0f7,#e8faff)}
+.school{font-size:13px;font-weight:bold;color:#123b70}
+h1{font-size:clamp(30px,6vw,55px);margin:20px 0 8px;color:#10376b}
+h1 span{display:block;color:#ec438e}
+.tag{display:inline-block;background:#ffe780;padding:10px 25px;border-radius:30px;font-weight:bold;font-style:italic}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+section{border:1px solid #9bd8f5;border-radius:16px;overflow:hidden;background:white;min-width:0}
+h2{margin:0;padding:13px;background:#bcecff;color:#10376b;font-size:21px}
+h2 small{display:block;font-size:13px;margin-top:4px}
+.content{padding:14px}
+label{display:block;font-weight:bold;font-size:14px;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #cbd9e5;border-radius:7px;background:white;font:inherit}
+input[readonly]{background:#eaf0f3;font-weight:bold}
+.profile h2{background:#e8ccff}
+.income h2{background:#ffd8ec}
+.money{background:#fff0f7;border:1px solid #ff85c4;padding:12px;border-radius:12px;margin-bottom:12px}
+.total{background:#e9fbea;border:1px solid #44c876;padding:14px;border-radius:12px;font-weight:bold}
+.allocation{grid-column:1}
+.expenses{grid-column:2}
+.alloc{padding:13px;border-radius:12px;margin:10px 0}
+.needs{background:#fff0f0;border:1px solid #ff555d}
+.savings{background:#eafbea;border:1px solid #2fbd67}
+.wants{background:#eaf7ff;border:1px solid #39aaff}
+.alloc p{font-size:13px;margin:6px 0}
+table{width:100%;border-collapse:collapse;min-width:480px;font-size:12px}
+th,td{border:1px solid #d4e2ec;padding:4px}
+th{background:#d9f4ff}
+td input,td select{padding:7px 4px;font-size:12px;min-width:70px}
+.tablewrap{overflow-x:auto}
+button{padding:11px 16px;border:0;border-radius:24px;font-weight:bold;cursor:pointer}
+.add{margin-top:10px;background:#e8f7ff;color:#10376b}
+.totalexpense{margin-top:10px;padding:12px;background:#ffe5f2;border:1px solid #ff85c4;border-radius:10px;text-align:right;font-weight:bold}
+.summary{grid-column:1/-1}
+.summarygrid{display:grid;grid-template-columns:1fr 1.2fr;gap:12px}
+.balance,.reflection{padding:14px;border-radius:14px}
+.balance{background:#f6edff;border:1px solid #b77bff}
+.reflection{background:#edfaff;border:1px solid #4bbef5}
+textarea{min-height:120px;resize:vertical}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:12px}
+.save{background:#2587e5;color:white}
+.clear{background:#e8f7ff;color:#10376b;border:1px solid #74bfea}
+#status{text-align:center;padding:0 12px 12px;color:#147743;font-weight:bold}
+@media(max-width:650px){body{padding:5px}.grid{grid-template-columns:1fr;padding:7px}.allocation,.expenses,.summary{grid-column:1}.summarygrid{grid-template-columns:1fr}h2{font-size:19px}.content{padding:10px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="school">🏫 CATBALOGAN NATIONAL COMPREHENSIVE HIGH SCHOOL<br>Barangay Mercedes, Catbalogan City, Samar · ABM STRAND</div>
+<h1>STUDENT <span>BUDGET PLANNER</span></h1>
+<div class="tag">Plan Today, Secure Tomorrow!</div>
+</header>
+<div class="grid">
+<section class="profile">
+<h2>1. ANG AKING PROFILE</h2>
+<div class="content">
+<label for="name">Pangalan:</label><input id="name" placeholder="Enter your name">
+<label for="section">Baitang at Seksyon:</label><input id="section" placeholder="e.g. Grade 12 - ABM 1">
+<label for="week">Linggo ng:</label><input id="week" placeholder="e.g. Week 1">
+<label for="date">Petsa:</label><input id="date" type="date">
+<p style="text-align:right;font-weight:bold;font-style:italic">Disiplina sa Pera,<br>Tagumpay sa Kinabukasan! ♡</p>
+</div></section>
+<section class="income">
+<h2>2. ANG AKING INCOME <small>(PERANG HAWAK)</small></h2>
+<div class="content">
+<div class="money">
+<label for="baon">👛 Baon mula sa Magulang (₱):</label><input id="baon" type="number" min="0" step=".01" value="0">
+<label for="other">➕ Iba pang Kita (₱):</label><input id="other" type="number" min="0" step=".01" value="0">
+</div>
+<div class="total">💰 KABUUANG PERA (A): ₱ <span id="incomeTotal">0.00</span></div>
+</div></section>
+<section class="allocation">
+<h2>3. ANG AKING ALLOCATION <small>(70-20-10 RULE)</small></h2>
+<div class="content">
+<p>Bago gumastos, i-compute muna ang nakalaang pondo gamit ang Kabuuang Pera (A).</p>
+<div class="alloc needs"><strong>🔴 70% NEEDS (Pangangailangan)</strong><p>Pamasahe, tanghalian, photocopy, proyekto sa paaralan.</p>₱ <input id="needs" readonly value="0.00"></div>
+<div class="alloc savings"><strong>🟢 20% SAVINGS (Ipon)</strong><p>Itabi para sa emergency at pangangailangan sa hinaharap.</p>₱ <input id="savings" readonly value="0.00"></div>
+<div class="alloc wants"><strong>🔵 10% WANTS (Kagustuhan)</strong><p>Milk tea, load, gupit, gala kasama ang barkada.</p>₱ <input id="wants" readonly value="0.00"></div>
+</div></section>
+<section class="expenses">
+<h2>4. EXPENSE TRACKER <small>(TALAHANAYAN NG GASTOS)</small></h2>
+<div class="content">
+<div class="tablewrap"><table>
+<thead><tr><th>Petsa</th><th>Item / Paglalagyan</th><th>Kategorya</th><th>Halaga (₱)</th><th></th></tr></thead>
+<tbody id="rows"></tbody>
+</table></div>
+<button class="add" type="button" id="add">＋ Magdagdag ng gastos</button>
+<div class="totalexpense">KABUUANG GASTOS (B): ₱ <span id="expenseTotal">0.00</span></div>
+</div></section>
+<section class="summary">
+<h2>5. SUMMARY &amp; REFLECTION <small>(PAGSUSURI)</small></h2>
+<div class="content summarygrid">
+<div class="balance"><h3>🪙 Natirang Pera</h3><p>Kabuuang Pera (A) − Kabuuang Gastos (B)</p>₱ <input id="remaining" readonly value="0.00"><p><strong>Matinong Pagpaplano,<br>Mas Maayos na Kinabukasan!</strong></p></div>
+<div class="reflection"><h3>💡 Aking Repleksyon sa Linggong Ito</h3><p>Nasunod ko ba ang aking 70-20-10 plan? Ano ang natutunan ko sa aking paggasta?</p><textarea id="reflection" placeholder="Isulat dito ang iyong repleksyon..."></textarea></div>
+</div></section>
+</div>
+<div class="actions"><button class="save" id="save" type="button">▣ I-SAVE / SUBMIT</button><button class="clear" id="clear" type="button">↻ I-CLEAR LAHAT</button><button class="clear" id="print" type="button">⎙ PRINT</button></div>
+<div id="status" role="status" aria-live="polite"></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const money=n=>(Number(n)||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+function calculate(){
+const total=(Number($('baon').value)||0)+(Number($('other').value)||0);
+$('incomeTotal').textContent=money(total);
+$('needs').value=money(total*.7);$('savings').value=money(total*.2);$('wants').value=money(total*.1);
+let spent=0;
+document.querySelectorAll('.amount').forEach(x=>spent+=Number(x.value)||0);
+$('expenseTotal').textContent=money(spent);$('remaining').value=money(total-spent);
+}
+function addRow(data={}){
+const tr=document.createElement('tr');
+tr.innerHTML='<td><input type="date" aria-label="Petsa"></td><td><input placeholder="Item / Paglalagyan" aria-label="Item"></td><td><select aria-label="Kategorya"><option>Needs</option><option>Savings</option><option>Wants</option></select></td><td><input class="amount" type="number" min="0" step=".01" placeholder="0.00" aria-label="Halaga"></td><td><button type="button" class="remove" aria-label="Tanggalin" style="padding:5px;background:#fff0f0;color:#a22">×</button></td>';
+$('rows').appendChild(tr);
+tr.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',calculate));
+tr.querySelector('.remove').addEventListener('click',()=>{tr.remove();calculate()});
+if(data.date)tr.children[0].querySelector('input').value=data.date;
+if(data.item)tr.children[1].querySelector('input').value=data.item;
+if(data.category)tr.children[2].querySelector('select').value=data.category;
+if(data.amount)tr.children[3].querySelector('input').value=data.amount;
+calculate();
+}
+$('add').addEventListener('click',()=>addRow());
+['baon','other'].forEach(id=>$(id).addEventListener('input',calculate));
+$('save').addEventListener('click',()=>{
+const data={name:$('name').value.trim(),section:$('section').value.trim(),week:$('week').value,date:$('date').value,baon:Number($('baon').value)||0,otherIncome:Number($('other').value)||0,expenses:[...$('rows').rows].map(r=>({date:r.cells[0].querySelector('input').value,item:r.cells[1].querySelector('input').value,category:r.cells[2].querySelector('select').value,amount:Number(r.cells[3].querySelector('input').value)||0})),reflection:$('reflection').value};
+if(!data.name||!data.section){$('status').textContent='Pakilagay muna ang pangalan at baitang/seksyon.';return}
+const drafts=JSON.parse(localStorage.getItem('budgetPlannerDrafts')||'[]');drafts.push(data);localStorage.setItem('budgetPlannerDrafts',JSON.stringify(drafts));
+$('status').textContent='Na-save sa device na ito. Hindi pa ito naipapadala sa Google Sheets.';
+});
+$('clear').addEventListener('click',()=>{if(!confirm('I-clear ang lahat ng laman?'))return;document.querySelectorAll('input').forEach(x=>{if(!x.readOnly)x.value=''});$('reflection').value='';$('rows').innerHTML='';addRow();calculate();$('status').textContent='Na-clear na ang form.'});
+$('print').addEventListener('click',()=>window.print());
+addRow();calculate();
+</script>
+</body>
+</html>
